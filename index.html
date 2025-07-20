@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mines and Minerals Act Quiz</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for better aesthetics */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center p-4">
+
+    <div id="quiz-container" class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 hover:scale-105">
+        <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-8">
+            Mines and Minerals Act Quiz
+        </h1>
+
+        <div id="quiz-content">
+            <!-- Question and options will be rendered here by JavaScript -->
+        </div>
+
+        <div id="score-card" class="text-center hidden">
+            <h2 class="text-3xl font-bold text-gray-700 mb-4" id="final-score-text"></h2>
+            <p class="text-lg text-gray-600 mb-8">
+                Great job! Review the questions to improve your knowledge.
+            </p>
+            <button id="restart-quiz-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Restart Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Define the quiz questions
+        const quizQuestions = [
+            {
+                question: "When was the Mines and Minerals (Development and Regulation) Act enacted?",
+                options: ["1947", "1957", "1967", "1977"],
+                answer: "1957"
+            },
+            {
+                question: "Which of the following is excluded from the definition of \"minerals\" under the Act?",
+                options: ["Iron ore", "Copper", "Mineral oils", "Gold"],
+                answer: "Mineral oils"
+            },
+            {
+                question: "What is the meaning of \"mining lease\" as per the Act?",
+                options: ["Licence for transport of minerals", "Lease for mining operations", "Government permit for mining", "A royalty certificate"],
+                answer: "Lease for mining operations"
+            },
+            {
+                question: "Who has the power to make rules regarding the grant of mineral concessions for minerals?",
+                options: ["State Government", "Central Government", "Local Bodies", "Mining Companies"],
+                answer: "Central Government"
+            },
+            {
+                question: "What types of minerals are classified as 'minor minerals'?",
+                options: ["Coal and lignite", "Building stones and gravel", "Gold and silver", "Atomic minerals"],
+                answer: "Building stones and gravel"
+            },
+            {
+                question: "What is a \"composite licence\" under the Act?",
+                options: ["Licence issued after mining lease expiry", "A single licence for prospecting and mining", "Permit for mineral transportation", "Permit for geological survey"],
+                answer: "A single licence for prospecting and mining"
+            },
+            {
+                question: "The term 'dispatch' under the Act means:",
+                options: ["Sale of minerals outside lease area", "Removal of minerals including consumption within leased area", "Storage of minerals", "Transport of minerals to port"],
+                answer: "Removal of minerals including consumption within leased area"
+            },
+            {
+                question: "'Exploration licence' under the Act is granted for:",
+                options: ["Mining operations", "Reconnaissance and prospecting operations", "Transport operations", "Lease renewal"],
+                answer: "Reconnaissance and prospecting operations"
+            },
+            {
+                question: "'Minor Minerals' include all except:",
+                options: ["Building stones", "Ordinary sand used for prescribed purpose", "Gold", "Ordinary clay"],
+                answer: "Gold"
+            },
+            {
+                question: "What is the maximum area for which one person can hold prospecting licences in a State?",
+                options: ["5 sq km", "10 sq km", "25 sq km", "50 sq km"],
+                answer: "25 sq km"
+            },
+            {
+                question: "Who is eligible to be granted a mineral concession as per the Act?",
+                options: ["Any foreign company", "Any person with property rights", "An Indian national or company", "Any State Government department"],
+                answer: "An Indian national or company"
+            },
+            {
+                question: "What is the maximum period for which a mining lease for coal and lignite can be granted?",
+                options: ["20 years", "30 years", "50 years", "99 years"],
+                answer: "30 years"
+            },
+            {
+                question: "What is the minimum period for which mining lease for minerals specified in Part A First Schedule can be granted?",
+                options: ["10 years", "15 years", "20 years", "25 years"],
+                answer: "20 years"
+            },
+            {
+                question: "Maximum period for grant of mining lease for minerals other than coal, lignite and atomic minerals is:",
+                options: ["30 years", "40 years", "50 years", "60 years"],
+                answer: "50 years"
+            },
+            {
+                question: "What is the maximum initial period for a prospecting licence under the Act?",
+                options: ["3 years", "5 years", "7 years", "10 years"],
+                answer: "3 years"
+            },
+            {
+                question: "Under what condition can the period of a prospecting licence be extended?",
+                options: ["With no justification", "If operations incomplete and reasons beyond control", "If the licensee requests", "If royalty is paid in advance"],
+                answer: "If operations incomplete and reasons beyond control"
+            },
+            {
+                question: "How can a mining lease be granted for notified minerals?",
+                options: ["Through direct grant by State Govt", "Through auction by competitive bidding", "By Central Govt notification", "By negotiation"],
+                answer: "Through auction by competitive bidding"
+            },
+            {
+                question: "What must an applicant for a mineral concession in government land submit with the application?",
+                options: ["Royalty payment", "Prescribed fee", "Environmental clearance", "Mining equipment details"],
+                answer: "Prescribed fee"
+            },
+            {
+                question: "Who maintains the Registers of mineral concession?",
+                options: ["Central Government", "District Collector", "State Government", "Directorate of Mines"],
+                answer: "State Government"
+            },
+            {
+                question: "Application for mineral concession is made to:",
+                options: ["Ministry of Mines", "State Government", "Central Government", "Local Panchayat"],
+                answer: "State Government"
+            },
+            {
+                question: "What payment is mandatory for a holder of a mining lease under this Act?",
+                options: ["Royalty", "Dead rent", "Both royalty and dead rent or greater", "No payment required"],
+                answer: "Both royalty and dead rent or greater"
+            },
+            {
+                question: "To whom is the royalty paid under the Act?",
+                options: ["Central Government", "State Government", "Local municipal body", "Mining company"],
+                answer: "State Government"
+            },
+            {
+                question: "What is 'dead rent' payable under the Act?",
+                options: ["Annual fee on leased area regardless of production", "Fine for illegal mining", "Royalty on minerals produced", "Penalty for mining lease renewal delay"],
+                answer: "Annual fee on leased area regardless of production"
+            },
+            {
+                question: "Which fund is established by the State Government to benefit persons affected by mining operations?",
+                options: ["National Mining Fund", "District Mineral Foundation", "Local Mine Welfare Trust", "State Mining Benefit Fund"],
+                answer: "District Mineral Foundation"
+            },
+            {
+                question: "What percentage of royalty is paid to the National Mineral Exploration Trust?",
+                options: ["1%", "2%", "5%", "10%"],
+                answer: "2%"
+            },
+            {
+                question: "For which minerals is the royalty fixed by the Central Government?",
+                options: ["Only minor minerals", "Only coal", "Only notified minerals", "Major minerals"],
+                answer: "Major minerals"
+            },
+            {
+                question: "Who can amend the rate of royalty in the Second Schedule?",
+                options: ["Parliament", "State Government", "Central Government", "Supreme Court"],
+                answer: "Central Government"
+            },
+            {
+                question: "Where are the rates of dead rent specified?",
+                options: ["First Schedule", "Fifth Schedule", "Third Schedule", "Sixth Schedule"],
+                answer: "Third Schedule"
+            },
+            {
+                question: "Minimum dead rent per hectare from 5th year onwards for low value minerals is:",
+                options: ["Rs. 400", "Rs. 1000", "Rs. 2000", "Rs. 5000"],
+                answer: "Rs. 2000"
+            },
+            {
+                question: "What is the maximum frequency with which royalty rates can be enhanced?",
+                options: ["Once in 1 year", "Once in 2 years", "Once in 3 years", "No restriction"],
+                answer: "Once in 3 years"
+            },
+            {
+                question: "Who conducts auctions for grant of mining leases for specified minerals under Part D of the First Schedule?",
+                options: ["Central Government", "State Government", "Local Authority", "Mineral Exploration Corporation"],
+                answer: "Central Government"
+            },
+            {
+                question: "Can a holder of a mining lease transfer the lease to another eligible person?",
+                options: ["No", "Yes, with previous State Government approval", "Yes, freely without approval", "Only to Government companies"],
+                answer: "Yes, with previous State Government approval"
+            },
+            {
+                question: "What happens if a mining lease holder fails to undertake production or dispatch of minerals for two years?",
+                options: ["Lease is extended automatically", "Lease shall lapse", "No consequence", "Lease is transferred to next applicant"],
+                answer: "Lease shall lapse"
+            },
+            {
+                question: "What special powers does the Central Government have under the Act?",
+                options: ["Undertake prospecting or mining operations in any area", "Grant mining leases direct", "Amend the Constitution", "Levy taxes on minerals"],
+                answer: "Undertake prospecting or mining operations in any area"
+            },
+            {
+                question: "The period of lease of government companies in mining is prescribed by:",
+                options: ["Rules by Central Government", "State Government discretion", "Decision of company board", "Mineral Advisory Council"],
+                answer: "Rules by Central Government"
+            },
+            {
+                question: "Which mineral concessions are ineligible for transfer as per Section 12A?",
+                options: ["Coal", "Atomic minerals", "Minerals in Part A or B of First Schedule", "Bauxite"],
+                answer: "Minerals in Part A or B of First Schedule"
+            },
+            {
+                question: "The leaseholder's right to match the highest bid in an auction after expiry applies if:",
+                options: ["Lease was granted through auction", "Lease was for captive use", "Mineral is minor", "Lease was cancelled"],
+                answer: "Lease was for captive use"
+            },
+            {
+                question: "When can Central Government issue directions to State Governments?",
+                options: ["For conservation of mineral resources", "For law and order issues", "For employee wages", "For local taxes"],
+                answer: "For conservation of mineral resources"
+            },
+            {
+                question: "Who is responsible for collecting the royalty?",
+                options: ["Ministry of Mines", "District Magistrate", "State Government", "Central Mining Agency"],
+                answer: "State Government"
+            },
+            {
+                question: "Is mineral concession voidable for violation of the Act?",
+                options: ["Yes", "No", "Only with court order", "Only by Parliament"],
+                answer: "Yes"
+            },
+            {
+                question: "Premature termination of a mining lease can be made by the State Government for which minerals?",
+                options: ["Minor minerals", "All minerals", "Major minerals", "Atomic minerals"],
+                answer: "Minor minerals"
+            },
+            {
+                question: "For how long can a prospecting licence be renewed if more time is required?",
+                options: ["Upto the period not exceeding 5 years total", "2 more years", "Indefinitely", "1 year"],
+                answer: "Upto the period not exceeding 5 years total"
+            },
+            {
+                question: "Can statutory clearances be transferred to a new lessee after expiry of previous lease?",
+                options: ["Yes", "No", "Only for coal mines", "Only after 1 year cooling period"],
+                answer: "Yes"
+            },
+            {
+                question: "Minimum period for mining lease for other than coal, lignite or atomic minerals is:",
+                options: ["5 years", "10 years", "15 years", "20 years"],
+                answer: "20 years"
+            },
+            {
+                question: "The period of government company mining leases is to be prescribed by:",
+                options: ["Company's own board", "Central Government rules", "State legislature", "Department of Industry"],
+                answer: "Central Government rules"
+            },
+            {
+                question: "On the expiry of lease, new lease is generally granted through:",
+                options: ["Lottery system", "Direct negotiation", "Auction", "Parliamentary approval"],
+                answer: "Auction"
+            },
+            {
+                question: "Provision for \"dead rent\" applies to:",
+                options: ["All minerals", "No minerals", "Only notified minerals", "Only minor minerals"],
+                answer: "All minerals"
+            },
+            {
+                question: "Does 'dead rent' apply in case royalty paid is higher than dead rent for the area?",
+                options: ["Yes, pay both", "No, pay whichever is higher", "Only if directed", "Never"],
+                answer: "No, pay whichever is higher"
+            },
+            {
+                question: "The grant of mining lease for minerals specified in Fourth Schedule is done by:",
+                options: ["State Government", "District Collector", "Municipal Commissioner", "Central Government"],
+                answer: "State Government"
+            },
+            {
+                question: "Who can amend the First and Fourth Schedules?",
+                options: ["State Government", "Central Government", "President of India", "Supreme Court"],
+                answer: "Central Government"
+            },
+            {
+                question: "What is the penalty for undertaking prospecting or mining operations without a valid licence or lease?",
+                options: ["Fine up to Rs. 10,000", "Imprisonment up to 1 year", "Imprisonment up to 5 years and fine up to Rs. 5 lakh per hectare", "No penalty"],
+                answer: "Imprisonment up to 5 years and fine up to Rs. 5 lakh per hectare"
+            },
+            {
+                question: "Who can take cognizance of offences under the Act?",
+                options: ["Any citizen", "Only police officers", "Authorized persons by Central or State Government", "Mining company officials"],
+                answer: "Authorized persons by Central or State Government"
+            },
+            {
+                question: "Who is deemed public servant under the Act for exercising powers of entry and inspection?",
+                options: ["Government authorized officers", "Elected MLAs", "Court clerks", "Mining Company Directors"],
+                answer: "Government authorized officers"
+            },
+            {
+                question: "Offences under Section 4(1) or 4(1A) are:",
+                options: ["Civil offences", "Non-cognizable", "Cognizable", "Bailable only"],
+                answer: "Cognizable"
+            },
+            {
+                question: "Special Courts under the Act are constituted by:",
+                options: ["Central Government", "State Government", "Supreme Court", "Parliament"],
+                answer: "State Government"
+            },
+            {
+                question: "Role of Special Courts under the Act is to:",
+                options: ["Grant mining leases", "Fix royalty rates", "Speedily try offences under the Act", "Oversee auctions"],
+                answer: "Speedily try offences under the Act"
+            },
+            {
+                question: "Who has the power to relax rules in special cases under the Act?",
+                options: ["Central Government", "State Government", "High Court", "Parliament"],
+                answer: "Central Government"
+            },
+            {
+                question: "Illegal mining, transport or storage is mainly prevented through rules by:",
+                options: ["Central Government", "State Government", "District Court", "CBI"],
+                answer: "State Government"
+            },
+            {
+                question: "Who can delegate powers vested under this Act?",
+                options: ["Only Central Government", "Only State Government", "Both Central and State Governments", "Supreme Court"],
+                answer: "Both Central and State Governments"
+            },
+            {
+                question: "Royalty and other sums due under the Act are recoverable as:",
+                options: ["Service tax", "Court fine", "Arrears of land revenue", "Professional tax"],
+                answer: "Arrears of land revenue"
+            },
+            {
+                question: "Notified minerals as per Fourth Schedule include all except:",
+                options: ["Iron ore", "Manganese ore", "Copper", "Limestone"],
+                answer: "Copper"
+            },
+            {
+                question: "Which of these is not a critical and strategic mineral as per Part D?",
+                options: ["Tin", "Glauconite", "Uranium", "Nickel"],
+                answer: "Uranium"
+            },
+            {
+                question: "The Fifth Schedule is related to:",
+                options: ["Additional amounts on mining leases", "Penalty structure", "List of notified minerals", "Powers of entry"],
+                answer: "Additional amounts on mining leases"
+            },
+            {
+                question: "Who can carry on mining operations without a licence as per Section 4(1) second proviso?",
+                options: ["Any miner", "Geological Survey of India", "Foreign company", "State mining corporation"],
+                answer: "Geological Survey of India"
+            },
+            {
+                question: "What is the purpose of the National Mineral Exploration Trust?",
+                options: ["Regulate auction procedures", "Raise funds for mineral exploration", "Administer mining leases", "Settle local disputes"],
+                answer: "Raise funds for mineral exploration"
+            },
+            {
+                question: "Dead rent does not exceed royalty in any year for:",
+                options: ["Lease granted before 1958", "Lease granted after 1958", "For both", "Only for auctioned leases"],
+                answer: "For both"
+            },
+            {
+                question: "District Mineral Foundation fund is established for:",
+                options: ["Funding exploration", "Interest and benefit of persons affected by mining", "Sale of minerals", "Rehabilitating only government employees"],
+                answer: "Interest and benefit of persons affected by mining"
+            },
+            {
+                question: "Any order of mining lease for notified minerals without Central Government approval is:",
+                options: ["Valid", "Not valid", "Can be ratified later", "Needs only State Government consent"],
+                answer: "Not valid"
+            },
+            {
+                question: "Mandatory minimum period for which mining lease for coal/lignite is granted:",
+                options: ["10 years", "15 years", "20 years", "25 years"],
+                answer: "20 years"
+            },
+            {
+                question: "A composite licence is granted through:",
+                options: ["Rights of first refusal", "Auction", "By negotiation", "By direct selection"],
+                answer: "Auction"
+            },
+            {
+                question: "Who can prescribe parameters for existence of mineral content for lease grant?",
+                options: ["State Government", "Central Government", "Parliament", "Chief Minister"],
+                answer: "Central Government"
+            },
+            {
+                question: "Clearance, approval, and licences attached to a mine vest in:",
+                options: ["Previous lessee", "Mining staff", "New successful bidder", "State Mines Corporation"],
+                answer: "New successful bidder"
+            },
+            {
+                question: "Exception to renewal of prospecting licence for atomic minerals requires:",
+                options: ["Central Govt approval", "State Govt approval", "Ministry of Coal", "Ministry of Home Affairs"],
+                answer: "Central Govt approval"
+            },
+            {
+                question: "Who can reserve areas for mining operations in public interest?",
+                options: ["Local MPs", "Central Government", "Planning Commission", "Public sector units"],
+                answer: "Central Government"
+            },
+            {
+                question: "Central Government can regulate grant of mining leases for:",
+                options: ["Atomic minerals (Part B First Schedule)", "Building stones", "Gravel", "Sand"],
+                answer: "Atomic minerals (Part B First Schedule)"
+            },
+            {
+                question: "Amendments to the MMDR Act, 1957 come into force through:",
+                options: ["Gazette Notification", "State Government decree", "Supreme Court order", "District Collector's letter"],
+                answer: "Gazette Notification"
+            },
+            {
+                question: "Which body is mainly responsible for implementation of rules under the Act at state level?",
+                options: ["Directorates of Mining and Geology", "District Panchayat", "State Legislative Council", "Ministry of Coal"],
+                answer: "Directorates of Mining and Geology"
+            },
+            {
+                question: "Role of Geological Survey of India under the Act includes:",
+                options: ["Sale of minerals", "Authorised reconnaissance or prospecting", "Grant of mining leases", "Auctions"],
+                answer: "Authorised reconnaissance or prospecting"
+            },
+            {
+                question: "On whom does the Act confer the power to collect rents, royalties, and taxes as arrears of land revenue?",
+                options: ["Central Government", "State Government", "Local Bodies", "Ministry of Coal"],
+                answer: "State Government"
+            },
+            {
+                question: "Rulemaking power for regulating the grant of minor mineral leases is vested in:",
+                options: ["Central Government", "Parliament", "State Government", "High Court"],
+                answer: "State Government"
+            },
+            {
+                question: "Who approves mining plans for mineral development?",
+                options: ["State Mining Officer", "State/Central Government", "High Court", "Supreme Court"],
+                answer: "State/Central Government"
+            },
+            {
+                question: "Bidding parameter for auction may include:",
+                options: ["Share in mineral production", "Payment linked to royalty", "Both a) and b)", "None"],
+                answer: "Both a) and b)"
+            },
+            {
+                question: "Minimum and maximum lease size and area are prescribed by:",
+                options: ["Central Government notification", "District Council", "Collector's order", "Lessee"],
+                answer: "Central Government notification"
+            },
+            {
+                question: "Compounding of offences under the Act may be done by:",
+                options: ["District Magistrate", "Authorised person", "Any local authority", "Ministry of Steel"],
+                answer: "Authorised person"
+            },
+            {
+                question: "Leaseholder is liable to pay compensation to surface occupier for:",
+                options: ["Crop loss", "Damage due to mining operations", "Any loss on account of lease", "Both a) and b)"],
+                answer: "Both a) and b)"
+            },
+            {
+                question: "The act and rules made under it extend to all:",
+                options: ["Renewals of prospecting licences and mining leases", "Only new licences", "Only first time leases", "None"],
+                answer: "Renewals of prospecting licences and mining leases"
+            },
+            {
+                question: "Who may authorise search for illegally raised minerals?",
+                options: ["Local Councillor", "Gazetted State/Central officer", "Panchayat Head", "Lessee"],
+                answer: "Gazetted State/Central officer"
+            },
+            {
+                question: "Mines and Minerals Act, 1957 applies to which territory?",
+                options: ["Selected mineral-rich states", "Whole of India", "States with bauxite only", "Excludes Union Territories"],
+                answer: "Whole of India"
+            },
+            {
+                question: "In case of dispute as to compensation, the Act provides for:",
+                options: ["Arbitration", "Principal civil court decision", "Decision by company board", "Appeal to District Magistrate"],
+                answer: "Principal civil court decision"
+            },
+            {
+                question: "The Act must be laid before:",
+                options: ["Supreme Court", "Parliament/State Legislature", "High Court", "Ministry of Labor"],
+                answer: "Parliament/State Legislature"
+            },
+            {
+                question: "Where is the list of notified minerals available?",
+                options: ["Second Schedule", "Fourth Schedule", "Third Schedule", "Fifth Schedule"],
+                answer: "Fourth Schedule"
+            },
+            {
+                question: "The power to validate past actions and provide indemnity under this Act rests with:",
+                options: ["President", "Central Government", "State Government", "Cabinet Secretary"],
+                answer: "Central Government"
+            },
+            {
+                question: "Composite licence is NOT available for which mineral category?",
+                options: ["Notified minerals", "Minor minerals", "Critical and strategic minerals", "All of the above"],
+                answer: "Notified minerals"
+            },
+            {
+                question: "Area to be leased must be:",
+                options: ["Compact and contiguous", "Disjointed", "In multiple districts", "Any shape"],
+                answer: "Compact and contiguous"
+            },
+            {
+                question: "Transfer of mining lease in respect of notified minerals post-2015 is allowed if:",
+                options: ["Lease was granted through auction", "Lease was granted prior to 2015", "Only with High Court order", "Only govt companies allowed"],
+                answer: "Lease was granted through auction"
+            },
+            {
+                question: "What is \"dead rent\"?",
+                options: ["Rent for non-productive area", "Minimum amount payable even if no mineral extracted", "Maximum royalty allowable", "Fine for late payment"],
+                answer: "Minimum amount payable even if no mineral extracted"
+            },
+            {
+                question: "Who can recover rental and royalty dues as arrears of land revenue?",
+                options: ["Central Government", "State Government officials", "Lessee", "Public Notification"],
+                answer: "State Government officials"
+            },
+            {
+                question: "Composite licence is a licence for:",
+                options: ["Only prospecting", "Only mining", "Prospecting cum mining", "Only reconnaissance"],
+                answer: "Prospecting cum mining"
+            },
+            {
+                question: "District Mineral Foundation is formed as a:",
+                options: ["Private trust", "Non-profit body", "For-profit company", "Cooperative"],
+                answer: "Non-profit body"
+            },
+            {
+                question: "Power to make rules for grant of licences for the continental shelf and territorial waters rests with:",
+                options: ["State Government", "Central Government", "Cabinet", "Parliament Committee"],
+                answer: "Central Government"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answeredQuestions = {}; // Stores {index: {selected: 'option', correct: true/false, answer: 'correct_answer'}}
+
+        const quizContent = document.getElementById('quiz-content');
+        const scoreCard = document.getElementById('score-card');
+        const finalScoreText = document.getElementById('final-score-text');
+        const restartQuizBtn = document.getElementById('restart-quiz-btn');
+
+        // Function to render the current question
+        function renderQuestion() {
+            if (currentQuestionIndex >= quizQuestions.length) {
+                showScore();
+                return;
+            }
+
+            const questionData = quizQuestions[currentQuestionIndex];
+            const hasAnswered = answeredQuestions[currentQuestionIndex];
+            const selectedOption = hasAnswered ? hasAnswered.selected : null;
+            const feedbackText = hasAnswered ? (hasAnswered.correct ? 'Correct!' : `Incorrect. The correct answer was: ${hasAnswered.answer}`) : '';
+            const feedbackClass = hasAnswered ? (hasAnswered.correct ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700') : '';
+
+            quizContent.innerHTML = `
+                <div class="text-xl font-semibold text-gray-700 mb-6">
+                    <span class="text-blue-600">Question ${currentQuestionIndex + 1}</span>/${quizQuestions.length}
+                </div>
+                <div class="text-2xl font-bold text-gray-900 mb-8 leading-relaxed">
+                    ${questionData.question}
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    ${questionData.options.map((option, index) => `
+                        <button
+                            class="w-full py-4 px-6 text-lg rounded-xl border-2
+                                transition duration-300 ease-in-out transform hover:scale-105
+                                ${selectedOption === option
+                                    ? (option === questionData.answer
+                                        ? 'bg-green-100 border-green-500 text-green-800 shadow-md'
+                                        : 'bg-red-100 border-red-500 text-red-800 shadow-md')
+                                    : 'bg-gray-50 border-gray-300 text-gray-800 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-700'
+                                }
+                                ${selectedOption && selectedOption !== option && option === questionData.answer
+                                    ? 'border-green-500 bg-green-50 text-green-700' // Highlight correct answer if user chose wrong
+                                    : ''
+                                }
+                                ${selectedOption ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'}
+                            "
+                            data-option="${option}"
+                            ${selectedOption ? 'disabled' : ''}
+                        >
+                            ${option}
+                        </button>
+                    `).join('')}
+                </div>
+                ${feedbackText ? `
+                    <div class="mt-4 p-4 rounded-lg text-center font-semibold text-lg ${feedbackClass}">
+                        ${feedbackText}
+                    </div>` : ''
+                }
+                <div class="flex justify-between mt-8">
+                    <button id="prev-btn" class="py-2 px-4 rounded-full font-bold transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300
+                        ${currentQuestionIndex === 0 ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white shadow-md'}">
+                        Previous
+                    </button>
+                    <button id="next-btn" class="py-2 px-4 rounded-full font-bold transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300
+                        ${(!hasAnswered && currentQuestionIndex !== quizQuestions.length - 1) ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md'}">
+                        ${currentQuestionIndex === quizQuestions.length - 1 ? 'Finish Quiz' : 'Next'}
+                    </button>
+                </div>
+            `;
+
+            // Add event listeners to the newly created buttons
+            document.querySelectorAll('#quiz-content button[data-option]').forEach(button => {
+                button.addEventListener('click', handleAnswerOptionClick);
+            });
+            document.getElementById('prev-btn').addEventListener('click', handlePreviousQuestion);
+            document.getElementById('next-btn').addEventListener('click', handleNextQuestion);
+        }
+
+        // Function to handle answer selection
+        function handleAnswerOptionClick(event) {
+            const selectedOption = event.target.dataset.option;
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            const isCorrect = selectedOption === currentQuestion.answer;
+
+            if (answeredQuestions[currentQuestionIndex]) {
+                // Already answered, prevent re-answering
+                return;
+            }
+
+            if (isCorrect) {
+                score++;
+            }
+
+            // Store the answer and its correctness
+            answeredQuestions[currentQuestionIndex] = {
+                selected: selectedOption,
+                correct: isCorrect,
+                answer: currentQuestion.answer
+            };
+
+            // Re-render to show feedback and disable options
+            renderQuestion();
+        }
+
+        // Function to navigate to the next question
+        function handleNextQuestion() {
+            if (currentQuestionIndex === quizQuestions.length - 1) {
+                showScore();
+            } else {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+        }
+
+        // Function to navigate to the previous question
+        function handlePreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        // Function to display the final score
+        function showScore() {
+            quizContent.classList.add('hidden');
+            scoreCard.classList.remove('hidden');
+            finalScoreText.textContent = `You scored ${score} out of ${quizQuestions.length}!`;
+        }
+
+        // Function to restart the quiz
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answeredQuestions = {};
+            scoreCard.classList.add('hidden');
+            quizContent.classList.remove('hidden');
+            renderQuestion();
+        }
+
+        // Event listener for restart button
+        restartQuizBtn.addEventListener('click', restartQuiz);
+
+        // Initial render when the page loads
+        window.onload = renderQuestion;
+    </script>
+</body>
+</html>
